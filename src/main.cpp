@@ -1,4 +1,9 @@
-#include <Arduino.h>
+// mengimport library dan file yang di butuhkan
+#include <Arduino.h> 
+#include <ESP8266WiFi.h> 
+#include <Firebase_ESP_Client.h> 
+#include <addons/TokenHelper.h> 
+#include "secrets.h" 
 
 // put function declarations here:
 int myFunction(int, int);
