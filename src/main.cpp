@@ -11,6 +11,24 @@ long duration;
 int distance;
 
 
+String status(int trig, int echo){
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+
+  duration = pulseIn(echo, HIGH);
+  distance = duration * 0.0343 / 2;
+  if (distance < 5)
+  {
+    return "aktif";
+  } else {
+    return "Nonaktif";
+  }
+  
+}
+
 
 void setup() {
   Serial.begin(115200);
@@ -19,23 +37,13 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(TRIG_PIN, LOW);
-  delayMicroseconds(2);
-  digitalWrite(TRIG_PIN, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIG_PIN, LOW);
-
-  // Baca durasi pulsa Echo
-  duration = pulseIn(ECHO_PIN, HIGH);
-
-  // Hitung jarak (cm)
-  distance = duration * 0.0343 / 2;
-
+  
+  String sensor1 = status(TRIG_PIN,ECHO_PIN);
   // Tampilkan hasil
-  Serial.print("Jarak: ");
-  Serial.print(distance);
-  Serial.println(" cm");
+  Serial.print("Status Sensor: ");
+  Serial.println(sensor1);
 
   delay(500);
 }
+
 
