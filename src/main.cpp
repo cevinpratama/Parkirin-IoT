@@ -41,19 +41,42 @@ void setup() {
   pinMode(ECHO1, INPUT);
   pinMode(pir1, INPUT);
 
-
-
 }
 
 void loop() {
   String sensor1 = statusping(TRIG1,ECHO1);
   String sensor2 = statuspir(pir1);
+
+  bool statusAwalMasuk = alurMasuk;
+  bool statusAwalKeluar = alurKeluar;
  
   gerbangMasuk(sensor1, sensor2);
+
+  if (statusAwalMasuk || alurMasuk) {
+      delay(50);
+      return; 
+  }
+  
   gerbangKeluar(sensor1,sensor2);
+
+  if (statusAwalKeluar || alurKeluar) {
+      delay(50);
+      return; 
+  }
   
   Serial.print("Jumlah Slot: ");
   Serial.println(slot);
+
+  if (Firebase.ready()) { 
+    if (Firebase.RTDB.setString(&fbdo, "/Jumlah slot:", slot)) {
+      Serial.println("Kirim data BERHASIL!");
+    } else {
+      Serial.print("Gagal: ");
+      Serial.println(fbdo.errorReason());
+    }
+  } else {
+    Serial.println("Firebase belum siap...");
+  }
 
   delay(100);
 }
