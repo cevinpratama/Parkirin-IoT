@@ -4,7 +4,7 @@
 #include <Firebase_ESP_Client.h> 
 #include <addons/TokenHelper.h> 
 #include "secrets.h" 
-#include "pingFunction.h"
+#include "sensorFunction.h"
 #include "config.h"
 
 
@@ -17,9 +17,9 @@ void setup() {
 
 void loop() {
   
-  String sensor1 = status(TRIG1,ECHO1);
+  String sensor1 = statusping(TRIG1,ECHO1);
 
-  
+
   // Tampilkan hasil
   Serial.print("Status Sensor: ");
   Serial.println(sensor1);
