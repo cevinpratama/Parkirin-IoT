@@ -7,15 +7,42 @@
 #include "sensorFunction.h"
 #include "config.h"
 
+
+FirebaseConfig config;
+FirebaseAuth auth;
+FirebaseData fbdo;
+
 int slot = 0; 
 bool alurMasuk = false;
 bool alurKeluar = false;
 
 void setup() {
+
   Serial.begin(115200);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Menghubungkan WiFi");
+
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(300);
+  }
+
+  Serial.println("\nWiFi connected");
+  Serial.println(WiFi.localIP());
+
+  config.api_key = API_KEY;
+  config.database_url = DATABASE_URL; 
+  config.signer.test_mode = true;
+
+  Firebase.begin(&config, &auth);
+  Firebase.reconnectWiFi(true);
+
   pinMode(TRIG1, OUTPUT);
   pinMode(ECHO1, INPUT);
   pinMode(pir1, INPUT);
+
+
+
 }
 
 void loop() {
