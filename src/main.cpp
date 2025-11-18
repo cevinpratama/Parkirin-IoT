@@ -7,28 +7,30 @@
 #include "sensorFunction.h"
 #include "config.h"
 
-
+int slot = 0; 
+bool alurMasuk = false;
+bool alurKeluar = false;
 
 void setup() {
   Serial.begin(115200);
-  // pinMode(TRIG1, OUTPUT);
-  // pinMode(ECHO1, INPUT);
+  pinMode(TRIG1, OUTPUT);
+  pinMode(ECHO1, INPUT);
   pinMode(pir1, INPUT);
 }
 
 void loop() {
-  
-  // String sensor1 = statusping(TRIG1,ECHO1);
+  String sensor1 = statusping(TRIG1,ECHO1);
   String sensor2 = statuspir(pir1);
+ 
+  gerbangMasuk(sensor1, sensor2);
+  gerbangKeluar(sensor1,sensor2);
+  
+  Serial.print("Jumlah Slot: ");
+  Serial.println(slot);
 
-
-  // Tampilkan hasil
-  // Serial.print("Status Sensor 1: ");
-  // Serial.println(sensor1);
-  Serial.print("Status Sensor 2: ");
-  Serial.println(sensor2);
-
-  delay(500);
+  delay(100);
 }
+
+
 
 
