@@ -22,7 +22,8 @@ String statusping(int trig, int echo){
 }
 
 String statuspir(int pin){
-  if(pin == LOW){
+  int statusSensor = digitalRead(pin);
+  if(statusSensor == LOW){
     return "Aktif";
   } else {
     return "Nonaktif";
