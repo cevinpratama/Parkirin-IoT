@@ -41,7 +41,7 @@ void gerbangMasuk(String s1, String s2){
   }
 
   if (alurMasuk && s2 == "Aktif"){
-    slot += 1;
+    slot -= 1;
     Serial.println("Mobil Masuk! Slot + 1");
     Serial.println("Menunggu area bersih...");
 
@@ -62,7 +62,7 @@ void gerbangKeluar(String s1, String s2){
   }
 
   if (alurKeluar && s1 == "Aktif"){
-    slot -= 1;
+    slot += 1;
     Serial.println("Mobil Keluar! Slot - 1");
     Serial.println("Menunggu area bersih...");
 
