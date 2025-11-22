@@ -66,7 +66,7 @@ void loop()
    testingS("Sensor 5 : ",sensor5);
    testingS("Sensor 6 : ",sensor6);
 
-   
+
   
   if (Firebase.ready()) {
 
@@ -106,12 +106,44 @@ void loop()
         lastPrint = millis();
      }
   }
+   sendStatus("slot_1",sensor3);
+   sendStatus("slot_2",sensor4);
+   sendStatus("slot_3",sensor5);
+   sendStatus("slot_1",sensor6);
   
-  delay(2000); 
+  delay(200); 
 }
 
 String testingS( String y, String x){
    Serial.print(y);
    Serial.println(x);
    Serial.println(" ---------------------------------------------------------------------------------------- ");
+}
+
+String sendStatus(String y, String x){
+   if (y == "Aktif"){
+      if (Firebase.RTDB.setInt(&fbdo, "/parkir/" + y, "Terisi")) 
+        {
+           Serial.println("Kirim data BERHASIL!");
+           slotSebelumnya = slot; 
+           lastSendTime = millis();
+        }
+        else
+        {
+           Serial.print("Gagal: ");
+           Serial.println(fbdo.errorReason());
+        }
+   } else{
+      if (Firebase.RTDB.setInt(&fbdo, "/parkir/" + y, "Penuh")) 
+        {
+           Serial.println("Kirim data BERHASIL!");
+           slotSebelumnya = slot; 
+           lastSendTime = millis();
+        }
+        else
+        {
+           Serial.print("Gagal: ");
+           Serial.println(fbdo.errorReason());
+        }
+   }
 }
