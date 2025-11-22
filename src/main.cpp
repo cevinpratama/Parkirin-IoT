@@ -19,6 +19,11 @@ int slotSebelumnya = -1;
 unsigned long lastSendTime = 0;
 const int sendInterval = 2000;
 
+String lastStatusS3 = "";
+String lastStatusS4 = "";
+String lastStatusS5 = "";
+String lastStatusS6 = "";
+
 void setup()
 {
 
@@ -59,12 +64,12 @@ void loop()
    String sensor6 = statuspir(pir5);
   
    // untuk testing sensor
-   testingS("Sensor 1 : ",sensor1);
-   testingS("Sensor 2 : ",sensor2);
-   testingS("Sensor 3 : ",sensor3);
-   testingS("Sensor 4 : ",sensor4);
-   testingS("Sensor 5 : ",sensor5);
-   testingS("Sensor 6 : ",sensor6);
+   // testingS("Sensor 1 : ",sensor1);
+   // testingS("Sensor 2 : ",sensor2);
+   // testingS("Sensor 3 : ",sensor3);
+   // testingS("Sensor 4 : ",sensor4);
+   // testingS("Sensor 5 : ",sensor5);
+   // testingS("Sensor 6 : ",sensor6);
 
 
   
@@ -97,6 +102,10 @@ void loop()
            Serial.println(fbdo.errorReason());
         }
      }
+      sendStatus("slot_1",sensor3, lastStatusS3);
+      sendStatus("slot_2",sensor4, lastStatusS4);
+      sendStatus("slot_3",sensor5, lastStatusS5);
+      sendStatus("slot_4",sensor6, lastStatusS6);
   } 
   else 
   {
@@ -106,10 +115,6 @@ void loop()
         lastPrint = millis();
      }
   }
-   sendStatus("slot_1",sensor3);
-   sendStatus("slot_2",sensor4);
-   sendStatus("slot_3",sensor5);
-   sendStatus("slot_1",sensor6);
   
   delay(200); 
 }
@@ -120,30 +125,27 @@ String testingS( String y, String x){
    Serial.println(" ---------------------------------------------------------------------------------------- ");
 }
 
-String sendStatus(String y, String x){
-   if (x == "Aktif"){
-      if (Firebase.RTDB.setString(&fbdo, "/parkir/" + y, "Terisi")) 
-        {
-           Serial.println("Kirim data BERHASIL!");
-           slotSebelumnya = slot; 
-           lastSendTime = millis();
-        }
-        else
-        {
-           Serial.print("Gagal: ");
-           Serial.println(fbdo.errorReason());
-        }
-   } else{
-      if (Firebase.RTDB.setString(&fbdo, "/parkir/" + y, "Penuh")) 
-        {
-           Serial.println("Kirim data BERHASIL!");
-           slotSebelumnya = slot; 
-           lastSendTime = millis();
-        }
-        else
-        {
-           Serial.print("Gagal: ");
-           Serial.println(fbdo.errorReason());
-        }
+String sendStatus(String path, String currentValue, String lastValue){
+  if (currentValue != lastValue) {
+       
+       String statusText;
+       if (currentValue == "Aktif") { 
+           statusText = "Terisi";
+       } else {
+           statusText = "Kosong";
+       }
+
+       Serial.print("Update " + path + ": " + statusText + "... ");
+
+       if (Firebase.RTDB.setString(&fbdo, "/parkir/" + path, statusText)) 
+       {
+          Serial.println("BERHASIL");
+          lastValue = currentValue; 
+       }
+       else
+       {
+          Serial.print("GAGAL: ");
+          Serial.println(fbdo.errorReason());
+       }
    }
 }
