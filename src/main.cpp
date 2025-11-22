@@ -47,14 +47,28 @@ void setup()
   pinMode(TRIG1, OUTPUT);
   pinMode(ECHO1, INPUT);
   pinMode(pir1, INPUT);
+  pinMode(pir2, INPUT);
 }
 void loop()
 {
+   String sensor1 = statusping(TRIG1, ECHO1);
+   String sensor2 = statuspir(pir1);
+   String sensor3 = statuspir(pir2);
+   String sensor4 = statuspir(pir3);
+   String sensor5 = statuspir(pir4);
+   String sensor6 = statuspir(pir5);
+  
+   // untuk testing sensor
+   testingS("Sensor 1 : ",sensor1);
+   testingS("Sensor 2 : ",sensor2);
+   testingS("Sensor 3 : ",sensor3);
+   testingS("Sensor 4 : ",sensor4);
+   testingS("Sensor 5 : ",sensor5);
+   testingS("Sensor 6 : ",sensor6);
+
+   
   
   if (Firebase.ready()) {
-
-     String sensor1 = statusping(TRIG1, ECHO1);
-     String sensor2 = statuspir(pir1);
 
      bool statusAwalMasuk = alurMasuk;
      bool statusAwalKeluar = alurKeluar;
@@ -93,5 +107,11 @@ void loop()
      }
   }
   
-  delay(100); 
+  delay(2000); 
+}
+
+String testingS( String y, String x){
+   Serial.print(y);
+   Serial.println(x);
+   Serial.println(" ---------------------------------------------------------------------------------------- ");
 }
