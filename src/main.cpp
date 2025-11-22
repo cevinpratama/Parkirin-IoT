@@ -121,8 +121,8 @@ String testingS( String y, String x){
 }
 
 String sendStatus(String y, String x){
-   if (y == "Aktif"){
-      if (Firebase.RTDB.setInt(&fbdo, "/parkir/" + y, "Terisi")) 
+   if (x == "Aktif"){
+      if (Firebase.RTDB.setString(&fbdo, "/parkir/" + y, "Terisi")) 
         {
            Serial.println("Kirim data BERHASIL!");
            slotSebelumnya = slot; 
@@ -134,7 +134,7 @@ String sendStatus(String y, String x){
            Serial.println(fbdo.errorReason());
         }
    } else{
-      if (Firebase.RTDB.setInt(&fbdo, "/parkir/" + y, "Penuh")) 
+      if (Firebase.RTDB.setString(&fbdo, "/parkir/" + y, "Penuh")) 
         {
            Serial.println("Kirim data BERHASIL!");
            slotSebelumnya = slot; 
