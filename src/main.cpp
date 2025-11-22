@@ -53,6 +53,9 @@ void setup()
   pinMode(ECHO1, INPUT);
   pinMode(pir1, INPUT);
   pinMode(pir2, INPUT);
+  pinMode(pir3, INPUT); 
+  pinMode(pir4, INPUT); 
+  pinMode(pir5, INPUT);
 }
 void loop()
 {
@@ -119,13 +122,13 @@ void loop()
   delay(200); 
 }
 
-String testingS( String y, String x){
+void testingS( String y, String x){
    Serial.print(y);
    Serial.println(x);
    Serial.println(" ---------------------------------------------------------------------------------------- ");
 }
 
-String sendStatus(String path, String currentValue, String lastValue){
+void sendStatus(String path, String currentValue, String &lastValue){
   if (currentValue != lastValue) {
        
        String statusText;
