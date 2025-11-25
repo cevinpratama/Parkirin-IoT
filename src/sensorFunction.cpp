@@ -1,33 +1,14 @@
 #include "sensorFunction.h"
-#include "config.h" 
+#include "config.h"
 
 extern int slot;
 extern bool alurMasuk;
 extern bool alurKeluar;
 
-long duration;
-int distance;
-
-String statusping(int trig, int echo){
-  digitalWrite(trig, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trig, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-
-  duration = pulseIn(echo, HIGH);
-  distance = duration * 0.0343 / 2;
-  
-  if (distance > 0 && distance < 5) { 
-    return "Aktif";
-  } else {
-    return "Nonaktif";
-  }
-}
-
 String statuspir(int pin){
-  int statusSensor = digitalRead(pin);
-  if(statusSensor == LOW){ 
+  int val = pcf.read(pin);
+  
+  if(val == LOW){ 
     return "Aktif";
   } else {
     return "Nonaktif";
@@ -37,40 +18,66 @@ String statuspir(int pin){
 void gerbangMasuk(String s1, String s2){
   if(s1 == "Aktif" && s2 == "Nonaktif" && !alurKeluar){
     alurMasuk = true;
-    Serial.println("Terdeteksi di Pintu Masuk...");
+    Serial.println("Gerbang Masuk: Terdeteksi...");
+    
+    lcd.setCursor(0, 0);
+    lcd.print("Mobil Masuk...  ");
+    
+    gateServo.write(90); 
   }
 
   if (alurMasuk && s2 == "Aktif"){
     slot -= 1;
-    Serial.println("Mobil Masuk! Slot + 1");
-    Serial.println("Menunggu area bersih...");
+    Serial.println("Mobil Masuk! Slot Berkurang.");
+    Serial.println("Menunggu mobil lewat...");
 
-   
-    while(statuspir(pir1) == "Aktif") { delay(100); }
-    while(statusping(TRIG1, ECHO1) == "Aktif") { delay(100); }
+    unsigned long timeout = millis();
+    while((statuspir(pir2) == "Aktif" || statuspir(pir1) == "Aktif")) { 
+        delay(50);
+        if(millis() - timeout > 10000) break; 
+    }
 
     delay(1000); 
     alurMasuk = false; 
-    Serial.println("Area Bersih. Siap deteksi baru.");
+    
+    gateServo.write(0);
+    
+    Serial.println("Area Bersih. Palang Tutup.");
+    lcd.setCursor(0, 0);
+    lcd.print("Selamat Datang  ");
   }
 }
 
 void gerbangKeluar(String s1, String s2){
   if(s2 == "Aktif" && s1 == "Nonaktif" && !alurMasuk){
     alurKeluar = true;
-    Serial.println("Terdeteksi di Pintu Keluar...");
+    Serial.println("Gerbang Keluar: Terdeteksi...");
+    
+    lcd.setCursor(0, 0);
+    lcd.print("Mobil Keluar... ");
+    
+    gateServo.write(90);
   }
 
   if (alurKeluar && s1 == "Aktif"){
     slot += 1;
-    Serial.println("Mobil Keluar! Slot - 1");
-    Serial.println("Menunggu area bersih...");
+    Serial.println("Mobil Keluar! Slot Bertambah.");
+    Serial.println("Menunggu mobil lewat...");
 
-    while(statusping(TRIG1, ECHO1) == "Aktif") { delay(100); }
-    while(statuspir(pir1) == "Aktif") { delay(100); }
+    unsigned long timeout = millis();
+    while((statuspir(pir1) == "Aktif" || statuspir(pir2) == "Aktif")) { 
+        delay(50); 
+        if(millis() - timeout > 10000) break;
+    }
 
     delay(1000);
     alurKeluar = false;
-    Serial.println("Area Bersih. Siap deteksi baru.");
+    
+    gateServo.write(0);
+    
+    Serial.println("Area Bersih. Palang Tutup.");
+    lcd.setCursor(0, 0);
+    lcd.print("Hati-hati...    ");
+    delay(1500);
   }
 }
