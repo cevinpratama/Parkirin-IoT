@@ -20,7 +20,7 @@ const int pir5 = 4;
 const int pir6 = 5; 
 const int pir7 = 6; 
 
-const int servoPin = D5; 
+const int servoPin = D4; 
 
 extern PCF8574 pcf;
 extern LiquidCrystal_I2C lcd;
